@@ -191,11 +191,27 @@ export default function HeroSection() {
         }
     }, []);
 
+    const [submissionMessage, setSubmissionMessage] = useState('');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (email) {
-            setSubmitted(true);
-            setTimeout(() => setSubmitted(false), 3000);
+            const submittedEmails = JSON.parse(localStorage.getItem('submittedEmails') || '[]');
+
+            if (submittedEmails.includes(email)) {
+                setSubmissionMessage('Email already submitted');
+                setSubmitted(true);
+            } else {
+                submittedEmails.push(email);
+                localStorage.setItem('submittedEmails', JSON.stringify(submittedEmails));
+                setSubmissionMessage("SUBMITTED! We'll be in touch.");
+                setSubmitted(true);
+            }
+
+            setTimeout(() => {
+                setSubmitted(false);
+                setSubmissionMessage('');
+            }, 3000);
             setEmail('');
         }
     };
@@ -310,7 +326,7 @@ export default function HeroSection() {
                         exit={{ opacity: 0 }}
                         className="mt-4 text-[#800020] font-medium"
                     >
-                        SUBMITTED! We'll be in touch.
+                        {submissionMessage}
                     </motion.p>
                 )}
 

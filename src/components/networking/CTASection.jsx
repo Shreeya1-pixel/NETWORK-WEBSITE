@@ -10,12 +10,28 @@ export default function CTASection() {
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
+    const [submissionMessage, setSubmissionMessage] = useState('');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (email) {
-            setSubmitted(true);
+            const submittedEmails = JSON.parse(localStorage.getItem('submittedEmails') || '[]');
+
+            if (submittedEmails.includes(email)) {
+                setSubmissionMessage('Email already submitted');
+                setSubmitted(true);
+            } else {
+                submittedEmails.push(email);
+                localStorage.setItem('submittedEmails', JSON.stringify(submittedEmails));
+                setSubmissionMessage("SUBMITTED! We'll be in touch.");
+                setSubmitted(true);
+            }
+
             setEmail('');
-            setTimeout(() => setSubmitted(false), 3000);
+            setTimeout(() => {
+                setSubmitted(false);
+                setSubmissionMessage('');
+            }, 3000);
         }
     };
 
@@ -75,7 +91,7 @@ export default function CTASection() {
                             exit={{ opacity: 0 }}
                             className="mt-4 text-[#800020] font-medium"
                         >
-                            SUBMITTED! We'll be in touch.
+                            {submissionMessage}
                         </motion.p>
                     )}
                 </div>
