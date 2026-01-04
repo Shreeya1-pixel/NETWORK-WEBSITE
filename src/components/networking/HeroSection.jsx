@@ -4,6 +4,8 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validateEmail } from "@/lib/validation";
+import { submitToWaitlist } from "@/lib/api";
+import { validateEmail } from "@/lib/validation";
 
 // Generate constellation patterns
 const generateConstellations = () => {
@@ -219,7 +221,7 @@ export default function HeroSection() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [emailError, setEmailError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setEmailError('');
         
@@ -230,53 +232,34 @@ export default function HeroSection() {
             return;
         }
 
-        const trimmedEmail = email.toLowerCase().trim();
-        
-        // Check if email already exists (ONE SUBMISSION PER EMAIL LIMIT)
-        const submittedEmails = JSON.parse(localStorage.getItem('submittedEmails') || '[]');
-        if (submittedEmails.includes(trimmedEmail)) {
-            setEmailError('This email has already been submitted. Each email can only be used once.');
-            setSubmissionMessage('This email has already been submitted.');
-            setSubmitted(true);
-            setTimeout(() => {
-                setSubmitted(false);
-                setSubmissionMessage('');
-            }, 4000);
-            return;
-        }
-
-        // Rate limiting: Prevent spam submissions
-        const lastSubmissionTime = localStorage.getItem('lastSubmissionTime');
-        const now = Date.now();
-        const RATE_LIMIT_MS = 5000; // 5 seconds between submissions
-        
-        if (lastSubmissionTime && (now - parseInt(lastSubmissionTime)) < RATE_LIMIT_MS) {
-            const remainingTime = Math.ceil((RATE_LIMIT_MS - (now - parseInt(lastSubmissionTime))) / 1000);
-            setSubmissionMessage(`Please wait ${remainingTime} second${remainingTime > 1 ? 's' : ''} before submitting again.`);
-            setSubmitted(true);
-            setTimeout(() => {
-                setSubmitted(false);
-                setSubmissionMessage('');
-            }, 3000);
-            return;
-        }
-
         if (email && !isSubmitting) {
             setIsSubmitting(true);
             
-            // Add email to submitted list (ONE SUBMISSION PER EMAIL)
-            submittedEmails.push(trimmedEmail);
-            localStorage.setItem('submittedEmails', JSON.stringify(submittedEmails));
-            localStorage.setItem('lastSubmissionTime', now.toString());
-            setSubmissionMessage("SUBMITTED! We'll be in touch.");
-            setSubmitted(true);
-
-            setTimeout(() => {
-                setSubmitted(false);
-                setSubmissionMessage('');
-                setIsSubmitting(false);
-            }, 3000);
-            setEmail('');
+            try {
+                const result = await submitToWaitlist(email);
+                
+                if (result.success) {
+                    setSubmissionMessage(result.message || "SUBMITTED! We'll be in touch.");
+                    setSubmitted(true);
+                    setEmail('');
+                }
+            } catch (error) {
+                // Handle duplicate email error
+                if (error.message.includes('already') || error.message.includes('exists')) {
+                    setEmailError('This email has already been submitted. Each email can only be used once.');
+                } else if (error.message.includes('Too many requests')) {
+                    setSubmissionMessage(error.message);
+                    setSubmitted(true);
+                } else {
+                    setEmailError(error.message || 'Failed to submit. Please try again.');
+                }
+            } finally {
+                setTimeout(() => {
+                    setSubmitted(false);
+                    setSubmissionMessage('');
+                    setIsSubmitting(false);
+                }, 3000);
+            }
         }
     };
 

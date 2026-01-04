@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { validateEmail, validatePhone } from "@/lib/validation";
+import { submitPartnershipRequest } from "@/lib/api";
 
 export default function PartnerForm() {
     const ref = useRef(null);
@@ -44,28 +45,34 @@ export default function PartnerForm() {
         // Clear errors
         setErrors({ email: '', phone: '' });
         
-        // Rate limiting: Prevent spam submissions
-        const lastSubmissionTime = localStorage.getItem('lastPartnerSubmissionTime');
-        const now = Date.now();
-        const RATE_LIMIT_MS = 10000; // 10 seconds between submissions (longer for partnership form)
-        
-        if (lastSubmissionTime && (now - parseInt(lastSubmissionTime)) < RATE_LIMIT_MS) {
-            const remainingTime = Math.ceil((RATE_LIMIT_MS - (now - parseInt(lastSubmissionTime))) / 1000);
-            toast.error(`Please wait ${remainingTime} second${remainingTime > 1 ? 's' : ''} before submitting again.`);
-            return;
-        }
-
         setIsSubmitting(true);
 
-        // Simulate submission
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            const result = await submitPartnershipRequest({
+                organization: formData.organization,
+                contact: formData.contact,
+                email: formData.email,
+                phone: formData.phone,
+            });
 
-        localStorage.setItem('lastPartnerSubmissionTime', now.toString());
-        toast.success('Partnership request submitted successfully!');
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3000);
-        setFormData({ organization: '', contact: '', email: '', phone: '' });
-        setIsSubmitting(false);
+            if (result.success) {
+                toast.success(result.message || 'Partnership request submitted successfully!');
+                setSubmitted(true);
+                setTimeout(() => setSubmitted(false), 3000);
+                setFormData({ organization: '', contact: '', email: '', phone: '' });
+            }
+        } catch (error) {
+            if (error.message.includes('already') || error.message.includes('exists')) {
+                setErrors(prev => ({ ...prev, email: 'Partnership request already submitted with this email' }));
+                toast.error('Partnership request already submitted with this email');
+            } else if (error.message.includes('Too many requests')) {
+                toast.error(error.message);
+            } else {
+                toast.error(error.message || 'Failed to submit partnership request. Please try again.');
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (field, value) => {
