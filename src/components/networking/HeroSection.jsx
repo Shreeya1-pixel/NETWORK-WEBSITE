@@ -303,6 +303,16 @@ export default function HeroSection() {
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </motion.form>
+                {submitted && (
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="mt-4 text-[#800020] font-medium"
+                    >
+                        SUBMITTED! We'll be in touch.
+                    </motion.p>
+                )}
 
                 {/* Launch date */}
                 <motion.div

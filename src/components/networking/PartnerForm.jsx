@@ -9,6 +9,7 @@ export default function PartnerForm() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         organization: '',
         contact: '',
@@ -24,6 +25,8 @@ export default function PartnerForm() {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         toast.success('Partnership request submitted successfully!');
+        setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 3000);
         setFormData({ organization: '', contact: '', email: '', phone: '' });
         setIsSubmitting(false);
     };
@@ -140,11 +143,21 @@ export default function PartnerForm() {
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     ) : (
                                         <>
-                                            Submit
+                                            {submitted ? 'Request Sent!' : 'Submit'}
                                             <Send className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                         </>
                                     )}
                                 </Button>
+                                {submitted && (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0 }}
+                                        className="mt-4 text-center text-[#800020] font-medium"
+                                    >
+                                        SUBMITTED! We'll be in touch.
+                                    </motion.p>
+                                )}
                             </div>
                         </form>
                     </motion.div>
