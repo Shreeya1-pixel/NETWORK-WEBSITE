@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validateEmail } from "@/lib/validation";
 import { submitToWaitlist } from "@/lib/api";
-import { validateEmail } from "@/lib/validation";
+
 
 // Generate constellation patterns
 const generateConstellations = () => {
@@ -177,7 +177,7 @@ export default function HeroSection() {
     });
 
     // Generate sparkle positions once
-    const sparkles = useMemo(() => 
+    const sparkles = useMemo(() =>
         [...Array(15)].map((_, i) => ({
             id: i,
             left: Math.random() * 100,
@@ -191,7 +191,7 @@ export default function HeroSection() {
 
     const y1 = useTransform(scrollY, [0, 500], [0, 150]);
     const y2 = useTransform(scrollY, [0, 500], [0, -100]);
-    
+
     // Cute scroll animations - gentle and smooth
     const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
     const contentOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.9, 0.7]);
@@ -224,7 +224,7 @@ export default function HeroSection() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setEmailError('');
-        
+
         // Validate email
         const emailValidation = validateEmail(email);
         if (!emailValidation.isValid) {
@@ -234,10 +234,10 @@ export default function HeroSection() {
 
         if (email && !isSubmitting) {
             setIsSubmitting(true);
-            
+
             try {
                 const result = await submitToWaitlist(email);
-                
+
                 if (result.success) {
                     setSubmissionMessage(result.message || "SUBMITTED! We'll be in touch.");
                     setSubmitted(true);
@@ -272,7 +272,7 @@ export default function HeroSection() {
             <motion.div style={{ opacity: starFieldOpacity }}>
                 <StarField mousePosition={mousePosition} />
             </motion.div>
-            
+
             {/* Floating sparkles on scroll */}
             <motion.div
                 style={{
@@ -340,8 +340,8 @@ export default function HeroSection() {
                 className="absolute bottom-40 left-20 w-16 h-16 bg-gradient-to-br from-[#EFDECD] to-[#FFB6C1] rounded-full opacity-30 hidden lg:block"
             />
 
-            <motion.div 
-                style={{ 
+            <motion.div
+                style={{
                     y: contentY,
                     opacity: contentOpacity,
                     scale: contentScale

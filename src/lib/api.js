@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = 'https://cfws27kvecbus5gnrfqeifnocu0lqmtg.lambda-url.us-east-1.on.aws/api';
 
 /**
  * Submit email to waitlist
