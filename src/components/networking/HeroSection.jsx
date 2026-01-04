@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { validateEmail } from "@/lib/validation";
 import { submitToWaitlist } from "@/lib/api";
-import { validateEmail } from "@/lib/validation";
+
 
 // Generate constellation patterns
 const generateConstellations = () => {
