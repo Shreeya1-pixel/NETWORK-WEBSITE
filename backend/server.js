@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { addToWaitlist, addPartnershipRequest } from './services/dynamodb.js';
 import { rateLimiter } from './middleware/rateLimiter.js';
+import serverless from 'serverless-http';
 
 // Load environment variables
 dotenv.config();
@@ -180,11 +181,15 @@ app.use((req, res) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🔗 CORS enabled for: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
-    console.log(`📊 DynamoDB Table: ${process.env.DYNAMODB_TABLE_NAME || 'waitlist'}`);
-});
+// Export handler for serverless
+export const handler = serverless(app);
+
+// Start server only if running directly
+if (process.env.NODE_ENV !== 'production' && process.argv[1].endsWith('server.js')) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 CORS enabled for: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
+    });
+}
 

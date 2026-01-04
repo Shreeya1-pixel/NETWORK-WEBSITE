@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 
@@ -7,11 +8,12 @@ const client = new DynamoDBClient({
     credentials: process.env.AWS_ACCESS_KEY_ID ? {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    } : undefined, // If credentials not provided, use default AWS credentials (IAM role, etc.)
+    } : undefined,
 });
 
 const dynamoDB = DynamoDBDocumentClient.from(client);
-const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'waitlist';
+const WAITLIST_TABLE = process.env.WAITLIST_TABLE || 'wishlist';
+const PARTNER_TABLE = process.env.PARTNER_TABLE || 'NetworkPartnerRequests';
 
 /**
  * Add email to waitlist
@@ -19,14 +21,15 @@ const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'waitlist';
  * @returns {Promise<Object>} Result object
  */
 export async function addToWaitlist(email) {
-    const timestamp = new Date().toISOString();
+    const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
     const emailLower = email.toLowerCase().trim();
+    const requestId = uuidv4();
 
     try {
         // Check if email already exists
         const existingItem = await dynamoDB.send(
             new GetCommand({
-                TableName: TABLE_NAME,
+                TableName: WAITLIST_TABLE,
                 Key: {
                     email: emailLower,
                 },
@@ -44,12 +47,13 @@ export async function addToWaitlist(email) {
         // Add email to waitlist
         await dynamoDB.send(
             new PutCommand({
-                TableName: TABLE_NAME,
+                TableName: WAITLIST_TABLE,
                 Item: {
                     email: emailLower,
-                    createdAt: timestamp,
-                    updatedAt: timestamp,
+                    timestamp: timestamp, // Match Python lambda structure
+                    requestId: requestId,
                     type: 'waitlist',
+                    createdAt: new Date().toISOString()
                 },
             })
         );
@@ -74,40 +78,27 @@ export async function addToWaitlist(email) {
  * @returns {Promise<Object>} Result object
  */
 export async function addPartnershipRequest(data) {
-    const timestamp = new Date().toISOString();
-    const emailLower = data.email.toLowerCase().trim();
+    const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp
+    const requestId = uuidv4();
 
     try {
-        // Check if email already exists for partnership
-        const existingItem = await dynamoDB.send(
-            new GetCommand({
-                TableName: TABLE_NAME,
-                Key: {
-                    email: emailLower,
-                },
-            })
-        );
-
-        if (existingItem.Item && existingItem.Item.type === 'partnership') {
-            return {
-                success: false,
-                error: 'Partnership request already submitted with this email',
-                duplicate: true,
-            };
-        }
-
         // Add partnership request
+        // Note: We cannot easily check for duplicates by email here because the PK is requestId.
+        // We rely on frontend/rate-limiting for that, or we'd need a GSI.
+
         await dynamoDB.send(
             new PutCommand({
-                TableName: TABLE_NAME,
+                TableName: PARTNER_TABLE,
                 Item: {
-                    email: emailLower,
+                    requestId: requestId, // Primary Key
+                    type: 'partner',
                     organization: data.organization,
                     contact: data.contact,
+                    email: data.email,
                     phone: data.phone,
-                    createdAt: timestamp,
-                    updatedAt: timestamp,
-                    type: 'partnership',
+                    timestamp: timestamp,
+                    status: 'PENDING',
+                    createdAt: new Date().toISOString()
                 },
             })
         );

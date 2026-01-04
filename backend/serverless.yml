@@ -1,0 +1,39 @@
+service: network-backend
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  cors: true
+  environment:
+    WAITLIST_TABLE: wishlist
+    PARTNER_TABLE: NetworkPartnerRequests
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - arn:aws:dynamodb:us-east-1:*:table/wishlist
+            - arn:aws:dynamodb:us-east-1:*:table/NetworkPartnerRequests
+
+functions:
+  api:
+    handler: server.handler
+    url:
+      cors:
+        allowedOrigins:
+          - '*'
+        allowedHeaders:
+          - Content-Type
+          - Authorization
+        allowedMethods:
+          - GET
+          - POST
+          - OPTIONS
