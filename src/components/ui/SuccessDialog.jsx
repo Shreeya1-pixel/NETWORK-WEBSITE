@@ -22,7 +22,7 @@ export function SuccessDialog({ isOpen, onClose, title = "Success!", message = "
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl z-50 border border-[#EFDECD]"
+                        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl z-[100] border border-[#EFDECD]"
                     >
                         <div className="flex flex-col items-center text-center">
                             <div className="w-16 h-16 bg-[#800020]/10 rounded-full flex items-center justify-center mb-4">
