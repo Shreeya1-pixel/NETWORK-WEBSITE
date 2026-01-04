@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -168,11 +168,34 @@ export default function HeroSection() {
     const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
     const sectionRef = useRef(null);
     const { scrollY } = useScroll();
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start start", "end start"]
+    });
+
+    // Generate sparkle positions once
+    const sparkles = useMemo(() => 
+        [...Array(15)].map((_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            size: Math.random() * 6 + 4,
+            xOffset: Math.random() * 20 - 10,
+            duration: Math.random() * 2 + 2,
+            delay: Math.random() * 2,
+        })), []
+    );
 
     const y1 = useTransform(scrollY, [0, 500], [0, 150]);
     const y2 = useTransform(scrollY, [0, 500], [0, -100]);
-    const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-    const scale = useTransform(scrollY, [0, 300], [1, 0.9]);
+    
+    // Cute scroll animations - gentle and smooth
+    const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+    const contentOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.9, 0.7]);
+    const contentScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+    const starFieldOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.6, 0.3]);
+    const sparklesOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.6, 0]);
+    const sparklesY = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -221,8 +244,45 @@ export default function HeroSection() {
             ref={sectionRef}
             className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#FDFBF7] via-[#FFF9F5] to-[#FFF0F5]"
         >
-            {/* Starry background */}
-            <StarField mousePosition={mousePosition} />
+            {/* Starry background with scroll fade */}
+            <motion.div style={{ opacity: starFieldOpacity }}>
+                <StarField mousePosition={mousePosition} />
+            </motion.div>
+            
+            {/* Floating sparkles on scroll */}
+            <motion.div
+                style={{
+                    opacity: sparklesOpacity,
+                    y: sparklesY
+                }}
+                className="absolute inset-0 pointer-events-none overflow-hidden"
+            >
+                {sparkles.map((sparkle) => (
+                    <motion.div
+                        key={sparkle.id}
+                        className="absolute rounded-full bg-[#FFB6C1]"
+                        style={{
+                            left: `${sparkle.left}%`,
+                            top: `${sparkle.top}%`,
+                            width: `${sparkle.size}px`,
+                            height: `${sparkle.size}px`,
+                            boxShadow: '0 0 10px rgba(255, 182, 193, 0.8)',
+                        }}
+                        animate={{
+                            y: [0, -30, 0],
+                            x: [0, sparkle.xOffset, 0],
+                            opacity: [0.3, 1, 0.3],
+                            scale: [1, 1.5, 1],
+                        }}
+                        transition={{
+                            duration: sparkle.duration,
+                            repeat: Infinity,
+                            delay: sparkle.delay,
+                            ease: "easeInOut"
+                        }}
+                    />
+                ))}
+            </motion.div>
 
             {/* Animated background shapes */}
             <motion.div
@@ -256,8 +316,12 @@ export default function HeroSection() {
                 className="absolute bottom-40 left-20 w-16 h-16 bg-gradient-to-br from-[#EFDECD] to-[#FFB6C1] rounded-full opacity-30 hidden lg:block"
             />
 
-            <motion.div
-                style={{ opacity, scale }}
+            <motion.div 
+                style={{ 
+                    y: contentY,
+                    opacity: contentOpacity,
+                    scale: contentScale
+                }}
                 className="relative z-10 max-w-5xl mx-auto px-6 text-center"
             >
                 {/* Badge */}
@@ -340,22 +404,6 @@ export default function HeroSection() {
                     <span className="font-medium text-[#800020]">17 February 2025</span>
                     <span className="mx-2">•</span>
                     <span>BITS Pilani Dubai Campus</span>
-                </motion.div>
-            </motion.div>
-
-            {/* Scroll indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2"
-            >
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    className="w-6 h-10 border-2 border-[#800020]/30 rounded-full flex justify-center pt-2"
-                >
-                    <motion.div className="w-1 h-2 bg-[#800020] rounded-full" />
                 </motion.div>
             </motion.div>
         </section>

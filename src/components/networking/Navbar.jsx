@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
@@ -29,10 +20,7 @@ export default function Navbar() {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.6 }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                        ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-[#800020]/5'
-                        : 'bg-transparent'
-                    }`}
+                className="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300"
             >
                 <div className="max-w-7xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
@@ -54,8 +42,7 @@ export default function Navbar() {
                                 <button
                                     key={item}
                                     onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
-                                    className={`text-sm font-medium transition-colors ${isScrolled ? 'text-gray-600 hover:text-[#800020]' : 'text-gray-700 hover:text-[#800020]'
-                                        }`}
+                                    className="text-sm font-medium transition-colors text-gray-700 hover:text-[#800020]"
                                     data-cursor-hover
                                 >
                                     {item}
