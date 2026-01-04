@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { validateEmail, validatePhone } from "@/lib/validation";
 import { submitPartnershipRequest } from "@/lib/api";
+import { SuccessDialog } from "@/components/ui/SuccessDialog";
 
 export default function PartnerForm() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
     const [errors, setErrors] = useState({
         email: '',
         phone: ''
@@ -56,9 +58,8 @@ export default function PartnerForm() {
             });
 
             if (result.success) {
-                toast.success(result.message || 'Partnership request submitted successfully!');
+                setShowSuccessDialog(true);
                 setSubmitted(true);
-                setTimeout(() => setSubmitted(false), 3000);
                 setFormData({ organization: '', contact: '', email: '', phone: '' });
             }
         } catch (error) {
@@ -85,6 +86,12 @@ export default function PartnerForm() {
 
     return (
         <section ref={ref} className="py-32 px-6 bg-gradient-to-b from-[#FDFBF7] to-[#FFF0F5]">
+            <SuccessDialog
+                isOpen={showSuccessDialog}
+                onClose={() => setShowSuccessDialog(false)}
+                title="Partnership Request Sent!"
+                message="Thank you for your interest in partnering with NETWORK. We have received your details and will be in touch shortly."
+            />
             <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     {/* Left content */}
@@ -210,16 +217,6 @@ export default function PartnerForm() {
                                         </>
                                     )}
                                 </Button>
-                                {submitted && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        className="mt-4 text-center text-[#800020] font-medium"
-                                    >
-                                        SUBMITTED! We'll be in touch.
-                                    </motion.p>
-                                )}
                             </div>
                         </form>
                     </motion.div>
