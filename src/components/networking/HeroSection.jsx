@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { validateEmail } from "@/lib/validation";
 
 // Generate constellation patterns
 const generateConstellations = () => {
@@ -215,25 +216,65 @@ export default function HeroSection() {
     }, []);
 
     const [submissionMessage, setSubmissionMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [emailError, setEmailError] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (email) {
-            const submittedEmails = JSON.parse(localStorage.getItem('submittedEmails') || '[]');
+        setEmailError('');
+        
+        // Validate email
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid) {
+            setEmailError(emailValidation.error);
+            return;
+        }
 
-            if (submittedEmails.includes(email)) {
-                setSubmissionMessage('Email already submitted');
-                setSubmitted(true);
-            } else {
-                submittedEmails.push(email);
-                localStorage.setItem('submittedEmails', JSON.stringify(submittedEmails));
-                setSubmissionMessage("SUBMITTED! We'll be in touch.");
-                setSubmitted(true);
-            }
+        const trimmedEmail = email.toLowerCase().trim();
+        
+        // Check if email already exists (ONE SUBMISSION PER EMAIL LIMIT)
+        const submittedEmails = JSON.parse(localStorage.getItem('submittedEmails') || '[]');
+        if (submittedEmails.includes(trimmedEmail)) {
+            setEmailError('This email has already been submitted. Each email can only be used once.');
+            setSubmissionMessage('This email has already been submitted.');
+            setSubmitted(true);
+            setTimeout(() => {
+                setSubmitted(false);
+                setSubmissionMessage('');
+            }, 4000);
+            return;
+        }
+
+        // Rate limiting: Prevent spam submissions
+        const lastSubmissionTime = localStorage.getItem('lastSubmissionTime');
+        const now = Date.now();
+        const RATE_LIMIT_MS = 5000; // 5 seconds between submissions
+        
+        if (lastSubmissionTime && (now - parseInt(lastSubmissionTime)) < RATE_LIMIT_MS) {
+            const remainingTime = Math.ceil((RATE_LIMIT_MS - (now - parseInt(lastSubmissionTime))) / 1000);
+            setSubmissionMessage(`Please wait ${remainingTime} second${remainingTime > 1 ? 's' : ''} before submitting again.`);
+            setSubmitted(true);
+            setTimeout(() => {
+                setSubmitted(false);
+                setSubmissionMessage('');
+            }, 3000);
+            return;
+        }
+
+        if (email && !isSubmitting) {
+            setIsSubmitting(true);
+            
+            // Add email to submitted list (ONE SUBMISSION PER EMAIL)
+            submittedEmails.push(trimmedEmail);
+            localStorage.setItem('submittedEmails', JSON.stringify(submittedEmails));
+            localStorage.setItem('lastSubmissionTime', now.toString());
+            setSubmissionMessage("SUBMITTED! We'll be in touch.");
+            setSubmitted(true);
 
             setTimeout(() => {
                 setSubmitted(false);
                 setSubmissionMessage('');
+                setIsSubmitting(false);
             }, 3000);
             setEmail('');
         }
@@ -367,19 +408,28 @@ export default function HeroSection() {
                     onSubmit={handleSubmit}
                     className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
                 >
-                    <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="h-14 px-6 bg-white/90 backdrop-blur-sm border-[#EFDECD] rounded-full text-base focus:border-[#800020] focus:ring-[#800020]/20 transition-all"
-                    />
+                    <div className="flex-1">
+                        <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                setEmailError('');
+                            }}
+                            className={`h-14 px-6 bg-white/90 backdrop-blur-sm ${emailError ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-full text-base focus:border-[#800020] focus:ring-[#800020]/20 transition-all`}
+                        />
+                        {emailError && (
+                            <p className="mt-2 text-sm text-[#800020] px-6">{emailError}</p>
+                        )}
+                    </div>
                     <Button
                         type="submit"
-                        className="h-14 px-8 bg-[#800020] hover:bg-[#600018] text-white rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#800020]/25 group"
+                        disabled={isSubmitting}
+                        className="h-14 px-8 bg-[#800020] hover:bg-[#600018] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#800020]/25 group"
                         data-cursor-hover
                     >
-                        {submitted ? 'Welcome!' : 'Join Waitlist'}
+                        {submitted ? 'Welcome!' : isSubmitting ? 'Submitting...' : 'Join Waitlist'}
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </motion.form>

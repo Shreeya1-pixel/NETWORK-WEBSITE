@@ -4,12 +4,17 @@ import { Building2, User, Mail, Phone, Send, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 export default function PartnerForm() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [errors, setErrors] = useState({
+        email: '',
+        phone: ''
+    });
     const [formData, setFormData] = useState({
         organization: '',
         contact: '',
@@ -19,11 +24,43 @@ export default function PartnerForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validate email
+        const emailValidation = validateEmail(formData.email);
+        if (!emailValidation.isValid) {
+            setErrors(prev => ({ ...prev, email: emailValidation.error }));
+            toast.error(emailValidation.error);
+            return;
+        }
+
+        // Validate phone
+        const phoneValidation = validatePhone(formData.phone);
+        if (!phoneValidation.isValid) {
+            setErrors(prev => ({ ...prev, phone: phoneValidation.error }));
+            toast.error(phoneValidation.error);
+            return;
+        }
+
+        // Clear errors
+        setErrors({ email: '', phone: '' });
+        
+        // Rate limiting: Prevent spam submissions
+        const lastSubmissionTime = localStorage.getItem('lastPartnerSubmissionTime');
+        const now = Date.now();
+        const RATE_LIMIT_MS = 10000; // 10 seconds between submissions (longer for partnership form)
+        
+        if (lastSubmissionTime && (now - parseInt(lastSubmissionTime)) < RATE_LIMIT_MS) {
+            const remainingTime = Math.ceil((RATE_LIMIT_MS - (now - parseInt(lastSubmissionTime))) / 1000);
+            toast.error(`Please wait ${remainingTime} second${remainingTime > 1 ? 's' : ''} before submitting again.`);
+            return;
+        }
+
         setIsSubmitting(true);
 
         // Simulate submission
         await new Promise(resolve => setTimeout(resolve, 1500));
 
+        localStorage.setItem('lastPartnerSubmissionTime', now.toString());
         toast.success('Partnership request submitted successfully!');
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
@@ -33,6 +70,10 @@ export default function PartnerForm() {
 
     const handleChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+        // Clear error when user starts typing
+        if (errors[field]) {
+            setErrors(prev => ({ ...prev, [field]: '' }));
+        }
     };
 
     return (
@@ -110,27 +151,41 @@ export default function PartnerForm() {
                                     />
                                 </div>
 
-                                <div className="relative">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
-                                    <Input
-                                        type="email"
-                                        placeholder="Email"
-                                        value={formData.email}
-                                        onChange={(e) => handleChange('email', e.target.value)}
-                                        className="h-14 pl-12 bg-white border-[#EFDECD] rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20"
-                                        required
-                                    />
+                                <div>
+                                    <div className="relative">
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                        <Input
+                                            type="email"
+                                            placeholder="Email"
+                                            value={formData.email}
+                                            onChange={(e) => handleChange('email', e.target.value)}
+                                            className={`h-14 pl-12 bg-white ${errors.email ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20`}
+                                            required
+                                        />
+                                    </div>
+                                    {errors.email && (
+                                        <p className="mt-2 text-sm text-[#800020]">{errors.email}</p>
+                                    )}
                                 </div>
 
-                                <div className="relative">
-                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
-                                    <Input
-                                        type="tel"
-                                        placeholder="Phone"
-                                        value={formData.phone}
-                                        onChange={(e) => handleChange('phone', e.target.value)}
-                                        className="h-14 pl-12 bg-white border-[#EFDECD] rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20"
-                                    />
+                                <div>
+                                    <div className="relative">
+                                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                        <Input
+                                            type="tel"
+                                            placeholder="Phone (Dubai or India)"
+                                            value={formData.phone}
+                                            onChange={(e) => handleChange('phone', e.target.value)}
+                                            className={`h-14 pl-12 bg-white ${errors.phone ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20`}
+                                            required
+                                        />
+                                    </div>
+                                    {errors.phone && (
+                                        <p className="mt-2 text-sm text-[#800020]">{errors.phone}</p>
+                                    )}
+                                    {!errors.phone && formData.phone && (
+                                        <p className="mt-1 text-xs text-gray-500">Format: +971501234567 (Dubai) or +919876543210 (India)</p>
+                                    )}
                                 </div>
 
                                 <Button
