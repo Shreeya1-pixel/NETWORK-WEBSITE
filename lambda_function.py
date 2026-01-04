@@ -45,8 +45,10 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'body': json.dumps({'message': 'Submission successful', 'requestId': item['requestId']}),
             'headers': {
-                'Content-Type': 'application/json'
-                # CORS headers are handled by Function URL config usually, but good to have here too if using Proxy integration
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                'Access-Control-Allow-Headers': 'Content-Type'
             }
         }
     except Exception as e:
@@ -55,6 +57,9 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': str(e)}),
             'headers': {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+                'Access-Control-Allow-Headers': 'Content-Type'
             }
         }
