@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,
+    origin: '*', // Allow all origins explicitly for now
+    credentials: false, // Must be false if origin is *
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
