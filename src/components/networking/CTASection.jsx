@@ -18,7 +18,7 @@ export default function CTASection() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setEmailError('');
-        
+
         // Validate email
         const emailValidation = validateEmail(email);
         if (!emailValidation.isValid) {
@@ -28,10 +28,10 @@ export default function CTASection() {
 
         if (email && !isSubmitting) {
             setIsSubmitting(true);
-            
+
             try {
                 const result = await submitToWaitlist(email);
-                
+
                 if (result.success) {
                     setSubmissionMessage(result.message || "SUBMITTED! We'll be in touch.");
                     setSubmitted(true);

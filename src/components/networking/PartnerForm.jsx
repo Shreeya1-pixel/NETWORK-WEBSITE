@@ -25,7 +25,7 @@ export default function PartnerForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validate email
         const emailValidation = validateEmail(formData.email);
         if (!emailValidation.isValid) {
@@ -44,7 +44,7 @@ export default function PartnerForm() {
 
         // Clear errors
         setErrors({ email: '', phone: '' });
-        
+
         setIsSubmitting(true);
 
         try {
