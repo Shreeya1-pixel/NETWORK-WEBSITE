@@ -65,9 +65,6 @@ export default function Footer() {
                                     Made with <Heart className="w-4 h-4 text-[#800020] fill-current" /> by students
                                 </span>
                             </p>
-                            <p className="text-gray-600 text-xs tracking-wider">
-                                MADE BY SHREEYA GUPTA
-                            </p>
                         </div>
                         <div className="flex gap-6">
                             <a href="#" className="text-gray-500 hover:text-[#FFB6C1] text-sm transition-colors" data-cursor-hover>
