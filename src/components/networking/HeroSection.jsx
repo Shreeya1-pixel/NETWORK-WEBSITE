@@ -66,7 +66,7 @@ const StarField = ({ mousePosition }) => {
                             y1={`${star1.y}%`}
                             x2={`${star2.x}%`}
                             y2={`${star2.y}%`}
-                            stroke="rgba(255, 255, 255, 0.3)"
+                            stroke="rgba(160, 140, 230, 0.25)"
                             strokeWidth={isNear1 ? "2" : "1"}
                             animate={{
                                 opacity: isNear1 ? [0.3, 0.8, 0.3] : [0.1, 0.3, 0.1]
@@ -92,7 +92,7 @@ const StarField = ({ mousePosition }) => {
                             y1={`${star1.y}%`}
                             x2={`${star2.x}%`}
                             y2={`${star2.y}%`}
-                            stroke="rgba(255, 255, 255, 0.3)"
+                            stroke="rgba(160, 140, 230, 0.25)"
                             strokeWidth={isNear1 ? "2" : "1"}
                             animate={{
                                 opacity: isNear1 ? [0.3, 0.8, 0.3] : [0.1, 0.3, 0.1]
@@ -142,19 +142,19 @@ const StarField = ({ mousePosition }) => {
                                     top: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     background: isNearCursor
-                                        ? 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 50%, transparent 100%)'
-                                        : 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
+                                        ? 'radial-gradient(circle, rgba(220,210,250,0.5) 0%, rgba(200,220,255,0.25) 50%, transparent 100%)'
+                                        : 'radial-gradient(circle, rgba(220,210,250,0.35) 0%, rgba(200,220,255,0.15) 50%, transparent 100%)',
                                 }}
                             />
                             {/* Inner bright star */}
                             <div
-                                className="relative rounded-full bg-white"
+                                className="relative rounded-full bg-[rgba(255,255,255,0.85)]"
                                 style={{
                                     width: `${star.size}px`,
                                     height: `${star.size}px`,
                                     boxShadow: isNearCursor
-                                        ? '0 0 20px rgba(255,255,255,1), 0 0 40px rgba(255,255,255,0.8)'
-                                        : '0 0 10px rgba(255,255,255,0.8)',
+                                        ? '0 0 16px rgba(160,140,230,0.35), 0 0 28px rgba(200,220,255,0.2)'
+                                        : '0 0 8px rgba(160,140,230,0.25)',
                                 }}
                             />
                         </motion.div>
@@ -266,14 +266,14 @@ export default function HeroSection() {
     return (
         <section
             ref={sectionRef}
-            className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#FDFBF7] via-[#FFF9F5] to-[#FFF0F5]"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden"
         >
-            {/* Starry background with scroll fade */}
+            {/* Starry background with scroll fade — softer pastel */}
             <motion.div style={{ opacity: starFieldOpacity }}>
                 <StarField mousePosition={mousePosition} />
             </motion.div>
 
-            {/* Floating sparkles on scroll */}
+            {/* Floating sparkles on scroll — pastel */}
             <motion.div
                 style={{
                     opacity: sparklesOpacity,
@@ -284,18 +284,18 @@ export default function HeroSection() {
                 {sparkles.map((sparkle) => (
                     <motion.div
                         key={sparkle.id}
-                        className="absolute rounded-full bg-[#FFB6C1]"
+                        className="absolute rounded-full bg-[rgba(218,213,244,0.6)]"
                         style={{
                             left: `${sparkle.left}%`,
                             top: `${sparkle.top}%`,
                             width: `${sparkle.size}px`,
                             height: `${sparkle.size}px`,
-                            boxShadow: '0 0 10px rgba(255, 182, 193, 0.8)',
+                            boxShadow: '0 0 12px rgba(160,140,230,0.2)',
                         }}
                         animate={{
                             y: [0, -30, 0],
                             x: [0, sparkle.xOffset, 0],
-                            opacity: [0.3, 1, 0.3],
+                            opacity: [0.3, 0.8, 0.3],
                             scale: [1, 1.5, 1],
                         }}
                         transition={{
@@ -308,28 +308,28 @@ export default function HeroSection() {
                 ))}
             </motion.div>
 
-            {/* Animated background shapes */}
+            {/* Ambient blobs — soft pastel */}
             <motion.div
                 style={{ y: y1 }}
-                className="absolute top-20 left-10 w-72 h-72 bg-[#FFB6C1]/20 rounded-full blur-3xl"
+                className="absolute top-20 left-10 w-72 h-72 rounded-full blur-[40px] opacity-[0.28] bg-[rgba(210,240,220,0.5)]"
             />
             <motion.div
                 style={{ y: y2 }}
-                className="absolute bottom-20 right-10 w-96 h-96 bg-[#800020]/10 rounded-full blur-3xl"
+                className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-[40px] opacity-[0.25] bg-[rgba(220,210,250,0.5)]"
             />
             <motion.div
                 style={{ y: y1 }}
-                className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-[#EFDECD]/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+                className="absolute top-1/2 left-1/2 w-[500px] h-[500px] rounded-full blur-[38px] opacity-[0.26] bg-[rgba(200,220,255,0.5)] -translate-x-1/2 -translate-y-1/2"
             />
 
-            {/* Floating elements */}
+            {/* Floating elements — glass-style */}
             <motion.div
                 animate={{
                     y: [0, -20, 0],
                     rotate: [0, 5, 0]
                 }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-32 right-20 w-20 h-20 bg-gradient-to-br from-[#800020] to-[#FFB6C1] rounded-2xl opacity-20 hidden lg:block"
+                className="absolute top-32 right-20 w-20 h-20 rounded-2xl opacity-25 bg-white/30 border border-white/40 backdrop-blur-[20px] hidden lg:block"
             />
             <motion.div
                 animate={{
@@ -337,7 +337,7 @@ export default function HeroSection() {
                     rotate: [0, -5, 0]
                 }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-40 left-20 w-16 h-16 bg-gradient-to-br from-[#EFDECD] to-[#FFB6C1] rounded-full opacity-30 hidden lg:block"
+                className="absolute bottom-40 left-20 w-16 h-16 rounded-full opacity-30 bg-white/25 border border-white/38 backdrop-blur-[20px] hidden lg:block"
             />
 
             <motion.div
@@ -353,10 +353,10 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-[#EFDECD] mb-8 shadow-sm"
+                    className="pill inline-flex items-center gap-2 px-4 py-2 mb-8 text-primary"
                 >
-                    <Sparkles className="w-4 h-4 text-[#800020]" />
-                    <span className="text-sm font-medium text-[#800020]">The Future of Student Networking</span>
+                    <Sparkles className="w-4 h-4 text-accent" />
+                    <span className="text-sm font-body font-medium">The Future of Student Networking</span>
                 </motion.div>
 
                 {/* Main heading */}
@@ -364,10 +364,13 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6"
+                    className="font-heading text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight mb-6 text-primary"
                 >
-                    <span className="text-[#1a1a1a]">Join </span>
-                    <span className="bg-gradient-to-r from-[#800020] via-[#a83248] to-[#FFB6C1] bg-clip-text text-transparent">
+                    {/* DM Sans for "Join" — Fraunces J can read as bent/swashed */}
+                    <span className="text-primary font-body font-semibold tracking-tight [font-feature-settings:normal]">
+                        Join{' '}
+                    </span>
+                    <span className="text-accent font-heading">
                         NETWORK
                     </span>
                 </motion.h1>
@@ -377,7 +380,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed"
+                    className="font-body text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
                 >
                     A next-generation networking platform, built by students for students—connecting peers
                     within and across campuses to unlock collaboration, opportunities, and real relationships.
@@ -400,16 +403,17 @@ export default function HeroSection() {
                                 setEmail(e.target.value);
                                 setEmailError('');
                             }}
-                            className={`h-14 px-6 bg-white/90 backdrop-blur-sm ${emailError ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-full text-base focus:border-[#800020] focus:ring-[#800020]/20 transition-all`}
+                            className={`h-14 px-6 rounded-2xl text-base font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border transition-all duration-[0.18s] ease ${emailError ? 'border-accent/60' : 'border-white/41'} focus:border-accent/50 focus:ring-2 focus:ring-accent/20`}
                         />
                         {emailError && (
-                            <p className="mt-2 text-sm text-[#800020] px-6">{emailError}</p>
+                            <p className="mt-2 text-sm text-accent px-6 font-body">{emailError}</p>
                         )}
                     </div>
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="h-14 px-8 bg-[#800020] hover:bg-[#600018] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#800020]/25 group"
+                        variant={submitted ? 'success' : 'primary'}
+                        className="h-14 px-8 rounded-2xl font-medium group transition-all duration-[0.18s] ease"
                         data-cursor-hover
                     >
                         {submitted ? 'Welcome!' : isSubmitting ? 'Submitting...' : 'Join Waitlist'}
@@ -421,7 +425,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="mt-4 text-[#800020] font-medium"
+                        className="mt-4 font-body font-medium text-success"
                     >
                         {submissionMessage}
                     </motion.p>
@@ -432,9 +436,9 @@ export default function HeroSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="mt-8 text-sm text-gray-500"
+                    className="mt-8 text-sm font-body text-muted"
                 >
-                    <span className="font-medium text-[#800020]">17 February 2025</span>
+                    <span className="font-medium text-accent">17 February 2025</span>
                     <span className="mx-2">•</span>
                     <span>BITS Pilani Dubai Campus</span>
                 </motion.div>

@@ -58,34 +58,29 @@ export default function CTASection() {
     };
 
     return (
-        <section ref={ref} className="py-32 px-6 bg-gradient-to-b from-[#FFF9F5] to-[#FDFBF7] relative overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-[#800020]/5 via-[#FFB6C1]/10 to-[#EFDECD]/5 rounded-full blur-3xl" />
-            </div>
-
+        <section ref={ref} className="py-32 px-6 relative overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8 }}
                 className="max-w-4xl mx-auto relative z-10"
             >
-                <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] border border-[#EFDECD] p-12 md:p-16 shadow-2xl shadow-[#800020]/10 text-center">
+                <div className="tint-neutral-frost rounded-[20px] p-12 md:p-16 border border-white/41 backdrop-blur-[24px] shadow-[0_6px_24px_rgba(100,120,160,0.13)] text-center transition-all duration-[0.18s] ease hover:shadow-[0_10px_32px_rgba(100,120,160,0.2)]">
                     <motion.div
                         animate={{
-                            scale: [1, 1.1, 1],
-                            rotate: [0, 5, 0]
+                            scale: [1, 1.05, 1],
+                            rotate: [0, 3, 0]
                         }}
                         transition={{ duration: 3, repeat: Infinity }}
-                        className="inline-flex p-4 bg-gradient-to-br from-[#800020] to-[#a83248] rounded-2xl mb-8"
+                        className="inline-flex p-4 rounded-2xl mb-8 bg-white/30 border border-white/40 backdrop-blur-[10px]"
                     >
-                        <Sparkles className="w-8 h-8 text-white" />
+                        <Sparkles className="w-8 h-8 text-accent" />
                     </motion.div>
 
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1a1a1a] mb-6">
+                    <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-medium text-primary mb-6">
                         Ready to Join the Network?
                     </h2>
-                    <p className="text-lg text-gray-600 mb-10 max-w-xl mx-auto">
+                    <p className="font-body text-lg text-secondary mb-10 max-w-xl mx-auto">
                         Start connecting, collaborating, and creating opportunities today.
                     </p>
 
@@ -99,16 +94,17 @@ export default function CTASection() {
                                     setEmail(e.target.value);
                                     setEmailError('');
                                 }}
-                                className={`h-14 px-6 bg-white ${emailError ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-full text-base focus:border-[#800020] focus:ring-[#800020]/20`}
+                                className={`h-14 px-6 rounded-2xl text-base font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border transition-all duration-[0.18s] ease ${emailError ? 'border-accent/60' : 'border-white/41'} focus:border-accent/50 focus:ring-2 focus:ring-accent/20`}
                             />
                             {emailError && (
-                                <p className="mt-2 text-sm text-[#800020] px-6">{emailError}</p>
+                                <p className="mt-2 text-sm text-accent px-6 font-body">{emailError}</p>
                             )}
                         </div>
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="h-14 px-8 bg-[#800020] hover:bg-[#600018] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full font-medium whitespace-nowrap group transition-all duration-300 hover:shadow-lg hover:shadow-[#800020]/25"
+                            variant={submitted ? 'success' : 'primary'}
+                            className="h-14 px-8 rounded-2xl font-medium whitespace-nowrap group"
                             data-cursor-hover
                         >
                             {submitted ? 'Welcome!' : isSubmitting ? 'Submitting...' : 'Sign Up Now'}
@@ -120,7 +116,7 @@ export default function CTASection() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
-                            className="mt-4 text-[#800020] font-medium"
+                            className="mt-4 font-body font-medium text-success"
                         >
                             {submissionMessage}
                         </motion.p>

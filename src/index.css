@@ -1,3 +1,136 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Light Pastel Glassmorphism Design System
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* Background gradient stops */
+  --bg-mist-blue: #C9D6E3;
+  --bg-soft-lavender: #D6D9F0;
+  --bg-pale-mint: #D8E8E2;
+  --bg-slate-blue: #B7C5D3;
+
+  /* Glass surface */
+  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-blur: 24px;
+  --glass-border: rgba(255, 255, 255, 0.41);
+  --glass-radius: 18px;
+  --glass-shadow: 0 6px 24px rgba(100, 120, 160, 0.13);
+  --glass-shadow-hover: 0 10px 32px rgba(100, 120, 160, 0.20);
+
+  /* Card tint gradients (linear-gradient(135deg, a, b)) */
+  --tint-mint: linear-gradient(135deg, rgba(221, 242, 230, 0.70), rgba(207, 233, 219, 0.66));
+  --tint-soft-blue: linear-gradient(135deg, rgba(220, 231, 246, 0.70), rgba(207, 224, 244, 0.66));
+  --tint-lavender: linear-gradient(135deg, rgba(230, 226, 248, 0.70), rgba(218, 213, 244, 0.66));
+  --tint-warm-sand: linear-gradient(135deg, rgba(246, 231, 210, 0.70), rgba(241, 217, 184, 0.66));
+  --tint-aqua-mint: linear-gradient(135deg, rgba(217, 239, 233, 0.70), rgba(203, 230, 223, 0.66));
+  --tint-neutral-frost: linear-gradient(135deg, rgba(241, 243, 246, 0.70), rgba(231, 235, 240, 0.66));
+
+  /* Typography */
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --text-primary: #2F3A45;
+  --text-secondary: #6B7684;
+  --text-muted: #8A95A3;
+
+  /* Buttons */
+  --btn-glass-bg: rgba(255, 255, 255, 0.40);
+  --btn-glass-border: rgba(255, 255, 255, 0.44);
+  --btn-primary-bg: rgba(160, 140, 230, 0.22);
+  --btn-primary-border: rgba(160, 140, 230, 0.40);
+  --btn-primary-text: #7060A8;
+  --btn-success-bg: rgba(207, 233, 219, 0.55);
+  --btn-success-text: #3A7A54;
+
+  /* Pill badges */
+  --pill-bg: rgba(255, 255, 255, 0.42);
+  --pill-border: rgba(255, 255, 255, 0.56);
+  --pill-blur: 10px;
+  --pill-mint: rgba(207, 233, 219, 0.55);
+  --pill-blue: rgba(207, 224, 244, 0.55);
+  --pill-lavender: rgba(218, 213, 244, 0.55);
+
+  /* Ambient blobs */
+  --blob-blue: rgba(200, 220, 255, 0.28);
+  --blob-mint: rgba(210, 240, 220, 0.26);
+  --blob-lavender: rgba(220, 210, 250, 0.25);
+}
+
+/* Fixed full-page gradient background — never scrolls */
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--bg-mist-blue) 0%,
+    var(--bg-soft-lavender) 35%,
+    var(--bg-pale-mint) 65%,
+    var(--bg-slate-blue) 100%
+  );
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headings use Fraunces */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+/* Base transitions */
+* {
+  transition-timing-function: ease;
+}
+
+/* Utility: glass surface base */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-hover:hover {
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Card tint classes (apply on top of .glass) */
+.tint-mint { background: var(--glass-bg); background-image: var(--tint-mint); }
+.tint-soft-blue { background: var(--glass-bg); background-image: var(--tint-soft-blue); }
+.tint-lavender { background: var(--glass-bg); background-image: var(--tint-lavender); }
+.tint-warm-sand { background: var(--glass-bg); background-image: var(--tint-warm-sand); }
+.tint-aqua-mint { background: var(--glass-bg); background-image: var(--tint-aqua-mint); }
+.tint-neutral-frost { background: var(--glass-bg); background-image: var(--tint-neutral-frost); }
+
+/* Pill badge */
+.pill {
+  border-radius: 999px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  backdrop-filter: blur(var(--pill-blur));
+  -webkit-backdrop-filter: blur(var(--pill-blur));
+}
+
+/* Ambient depth blobs (positioned in layout) */
+.ambient-blob {
+  border-radius: 50%;
+  filter: blur(38px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.ambient-blob--blue { background: var(--blob-blue); width: 170px; height: 170px; }
+.ambient-blob--mint { background: var(--blob-mint); width: 160px; height: 160px; }
+.ambient-blob--lavender { background: var(--blob-lavender); width: 150px; height: 150px; }

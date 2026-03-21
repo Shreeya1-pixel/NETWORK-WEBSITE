@@ -85,7 +85,7 @@ export default function PartnerForm() {
     };
 
     return (
-        <section ref={ref} className="py-32 px-6 bg-gradient-to-b from-[#FDFBF7] to-[#FFF0F5]">
+        <section ref={ref} className="py-32 px-6">
             <SuccessDialog
                 isOpen={showSuccessDialog}
                 onClose={() => setShowSuccessDialog(false)}
@@ -100,13 +100,13 @@ export default function PartnerForm() {
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="inline-block px-4 py-2 bg-[#FFB6C1]/20 rounded-full text-[#800020] text-sm font-medium mb-6">
+                        <span className="pill inline-block px-4 py-2 text-primary text-sm font-body font-medium mb-6">
                             Partnership
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-6">
+                        <h2 className="font-heading text-4xl md:text-5xl font-medium text-primary mb-6">
                             Become a Partner
                         </h2>
-                        <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                        <p className="font-body text-lg text-secondary mb-8 leading-relaxed">
                             Join us as a partner and be part of NETWORK's mission to connect students across campuses.
                             Help us build the future of student networking together.
                         </p>
@@ -126,90 +126,91 @@ export default function PartnerForm() {
                                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                                     className="flex items-center gap-3"
                                 >
-                                    <div className="w-6 h-6 rounded-full bg-[#800020]/10 flex items-center justify-center">
-                                        <CheckCircle className="w-4 h-4 text-[#800020]" />
+                                    <div className="w-6 h-6 rounded-full bg-[rgba(207,233,219,0.55)] border border-white/40 flex items-center justify-center">
+                                        <CheckCircle className="w-4 h-4 text-success" />
                                     </div>
-                                    <span className="text-gray-700">{benefit}</span>
+                                    <span className="font-body text-primary">{benefit}</span>
                                 </motion.div>
                             ))}
                         </div>
                     </motion.div>
 
-                    {/* Right form */}
+                    {/* Right form — glass */}
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
-                        <form onSubmit={handleSubmit} className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-[#EFDECD] shadow-xl shadow-[#800020]/5">
+                        <form onSubmit={handleSubmit} className="tint-soft-blue rounded-[18px] p-8 md:p-10 border border-white/41 backdrop-blur-[24px] shadow-[0_6px_24px_rgba(100,120,160,0.13)]">
                             <div className="space-y-6">
                                 <div className="relative">
-                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent/70" />
                                     <Input
                                         placeholder="Organization Name"
                                         value={formData.organization}
                                         onChange={(e) => handleChange('organization', e.target.value)}
-                                        className="h-14 pl-12 bg-white border-[#EFDECD] rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20"
+                                        className="h-14 pl-12 rounded-2xl font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border border-white/41 focus:border-accent/50 focus:ring-2 focus:ring-accent/20"
                                         required
                                     />
                                 </div>
 
                                 <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent/70" />
                                     <Input
                                         placeholder="Contact Person"
                                         value={formData.contact}
                                         onChange={(e) => handleChange('contact', e.target.value)}
-                                        className="h-14 pl-12 bg-white border-[#EFDECD] rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20"
+                                        className="h-14 pl-12 rounded-2xl font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border border-white/41 focus:border-accent/50 focus:ring-2 focus:ring-accent/20"
                                         required
                                     />
                                 </div>
 
                                 <div>
                                     <div className="relative">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent/70" />
                                         <Input
                                             type="email"
                                             placeholder="Email"
                                             value={formData.email}
                                             onChange={(e) => handleChange('email', e.target.value)}
-                                            className={`h-14 pl-12 bg-white ${errors.email ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20`}
+                                            className={`h-14 pl-12 rounded-2xl font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border ${errors.email ? 'border-accent/60' : 'border-white/41'} focus:border-accent/50 focus:ring-2 focus:ring-accent/20`}
                                             required
                                         />
                                     </div>
                                     {errors.email && (
-                                        <p className="mt-2 text-sm text-[#800020]">{errors.email}</p>
+                                        <p className="mt-2 text-sm font-body text-accent">{errors.email}</p>
                                     )}
                                 </div>
 
                                 <div>
                                     <div className="relative">
-                                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#800020]/50" />
+                                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent/70" />
                                         <Input
                                             type="tel"
                                             placeholder="Phone (Dubai or India)"
                                             value={formData.phone}
                                             onChange={(e) => handleChange('phone', e.target.value)}
-                                            className={`h-14 pl-12 bg-white ${errors.phone ? 'border-[#800020]' : 'border-[#EFDECD]'} rounded-2xl focus:border-[#800020] focus:ring-[#800020]/20`}
+                                            className={`h-14 pl-12 rounded-2xl font-body text-primary placeholder:text-muted bg-white/28 backdrop-blur-[24px] border ${errors.phone ? 'border-accent/60' : 'border-white/41'} focus:border-accent/50 focus:ring-2 focus:ring-accent/20`}
                                             required
                                         />
                                     </div>
                                     {errors.phone && (
-                                        <p className="mt-2 text-sm text-[#800020]">{errors.phone}</p>
+                                        <p className="mt-2 text-sm font-body text-accent">{errors.phone}</p>
                                     )}
                                     {!errors.phone && formData.phone && (
-                                        <p className="mt-1 text-xs text-gray-500">Format: +971501234567 (Dubai) or +919876543210 (India)</p>
+                                        <p className="mt-1 text-xs font-body text-muted">Format: +971501234567 (Dubai) or +919876543210 (India)</p>
                                     )}
                                 </div>
 
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full h-14 bg-[#800020] hover:bg-[#600018] text-white rounded-2xl font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#800020]/25 group"
+                                    variant={submitted ? 'success' : 'primary'}
+                                    className="w-full h-14 rounded-2xl font-medium group"
                                     data-cursor-hover
                                 >
                                     {isSubmitting ? (
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        <div className="w-5 h-5 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
                                     ) : (
                                         <>
                                             {submitted ? 'Request Sent!' : 'Submit'}
