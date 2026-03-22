@@ -46,7 +46,7 @@ export default function EventsTeaser() {
                                     <span className="text-2xl font-heading font-medium text-accent">17</span>
                                 </div>
                                 <div>
-                                    <p className="font-heading font-medium text-primary text-lg">February 2025</p>
+                                    <p className="font-heading font-medium text-primary text-lg">April 2026</p>
                                     <p className="font-body text-muted">Official Launch Day</p>
                                 </div>
                             </div>

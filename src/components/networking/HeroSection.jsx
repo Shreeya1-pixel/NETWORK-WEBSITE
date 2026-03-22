@@ -438,7 +438,7 @@ export default function HeroSection() {
                     transition={{ duration: 0.8, delay: 0.8 }}
                     className="mt-8 text-sm font-body text-muted"
                 >
-                    <span className="font-medium text-accent">17 February 2025</span>
+                    <span className="font-medium text-accent">17 April 2026</span>
                     <span className="mx-2">•</span>
                     <span>BITS Pilani Dubai Campus</span>
                 </motion.div>
